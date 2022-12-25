@@ -2,7 +2,7 @@
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.CesiumSensorVolumes = factory());
-}(this, (function () { 'use strict';
+})(this, (function () { 'use strict';
 
 	/**
 	 * Cesium Sensor Volumes - https://github.com/Flowm/cesium-sensor-volumes
@@ -783,15 +783,15 @@
 		}
 	}
 
-	const defaultIntersectionColor = Color.WHITE;
-	const defaultIntersectionWidth = 1.0;
-	const defaultRadius = Number.POSITIVE_INFINITY;
+	const defaultIntersectionColor$2 = Color.WHITE;
+	const defaultIntersectionWidth$2 = 1.0;
+	const defaultRadius$2 = Number.POSITIVE_INFINITY;
 
-	const matrix3Scratch = new Matrix3();
-	const cachedPosition = new Cartesian3();
-	const cachedOrientation = new Quaternion();
+	const matrix3Scratch$2 = new Matrix3();
+	const cachedPosition$2 = new Cartesian3();
+	const cachedOrientation$2 = new Quaternion();
 
-	function assignSpherical(index, array, clock, cone) {
+	function assignSpherical$1(index, array, clock, cone) {
 		var spherical = array[index];
 		if (!defined(spherical)) {
 			spherical = new Spherical();
@@ -812,21 +812,21 @@
 			// No clock angle limits, so this is just a circle.
 			// There might be a hole but we're ignoring it for now.
 			for (angle = 0.0; angle < CesiumMath.TWO_PI; angle += angleStep) {
-				assignSpherical(i++, directions, angle, outerHalfAngle);
+				assignSpherical$1(i++, directions, angle, outerHalfAngle);
 			}
 		} else {
 			// There are clock angle limits.
 			for (angle = minimumClockAngle; angle < maximumClockAngle; angle += angleStep) {
-				assignSpherical(i++, directions, angle, outerHalfAngle);
+				assignSpherical$1(i++, directions, angle, outerHalfAngle);
 			}
-			assignSpherical(i++, directions, maximumClockAngle, outerHalfAngle);
+			assignSpherical$1(i++, directions, maximumClockAngle, outerHalfAngle);
 			if (innerHalfAngle) {
 				for (angle = maximumClockAngle; angle > minimumClockAngle; angle -= angleStep) {
-					assignSpherical(i++, directions, angle, innerHalfAngle);
+					assignSpherical$1(i++, directions, angle, innerHalfAngle);
 				}
-				assignSpherical(i++, directions, minimumClockAngle, innerHalfAngle);
+				assignSpherical$1(i++, directions, minimumClockAngle, innerHalfAngle);
 			} else {
-				assignSpherical(i++, directions, maximumClockAngle, 0.0);
+				assignSpherical$1(i++, directions, maximumClockAngle, 0.0);
 			}
 		}
 		directions.length = i;
@@ -890,8 +890,8 @@
 			var show = entity.isShowing && entity.isAvailable(time) && Property.getValueOrDefault(conicSensorGraphics._show, time, true);
 
 			if (show) {
-				position = Property.getValueOrUndefined(entity._position, time, cachedPosition);
-				orientation = Property.getValueOrUndefined(entity._orientation, time, cachedOrientation);
+				position = Property.getValueOrUndefined(entity._position, time, cachedPosition$2);
+				orientation = Property.getValueOrUndefined(entity._orientation, time, cachedOrientation$2);
 				show = defined(position) && defined(orientation);
 			}
 
@@ -922,7 +922,7 @@
 			}
 
 			if (!Cartesian3.equals(position, data.position) || !Quaternion.equals(orientation, data.orientation)) {
-				Matrix4.fromRotationTranslation(Matrix3.fromQuaternion(orientation, matrix3Scratch), position, primitive.modelMatrix);
+				Matrix4.fromRotationTranslation(Matrix3.fromQuaternion(orientation, matrix3Scratch$2), position, primitive.modelMatrix);
 				data.position = Cartesian3.clone(position, data.position);
 				data.orientation = Quaternion.clone(orientation, data.orientation);
 			}
@@ -945,10 +945,10 @@
 				data.minimumClockAngle = minimumClockAngle;
 			}
 
-			primitive.radius = Property.getValueOrDefault(conicSensorGraphics._radius, time, defaultRadius);
+			primitive.radius = Property.getValueOrDefault(conicSensorGraphics._radius, time, defaultRadius$2);
 			primitive.lateralSurfaceMaterial = MaterialProperty.getValue(time, conicSensorGraphics._lateralSurfaceMaterial, primitive.lateralSurfaceMaterial);
-			primitive.intersectionColor = Property.getValueOrClonedDefault(conicSensorGraphics._intersectionColor, time, defaultIntersectionColor, primitive.intersectionColor);
-			primitive.intersectionWidth = Property.getValueOrDefault(conicSensorGraphics._intersectionWidth, time, defaultIntersectionWidth);
+			primitive.intersectionColor = Property.getValueOrClonedDefault(conicSensorGraphics._intersectionColor, time, defaultIntersectionColor$2, primitive.intersectionColor);
+			primitive.intersectionWidth = Property.getValueOrDefault(conicSensorGraphics._intersectionWidth, time, defaultIntersectionWidth$2);
 		}
 		return true;
 	};
@@ -1452,7 +1452,7 @@
 		this.lateralSurfaceMaterial = defaultValue(this.lateralSurfaceMaterial, source.lateralSurfaceMaterial);
 	};
 
-	function assignSpherical$1(index, array, clock, cone) {
+	function assignSpherical(index, array, clock, cone) {
 		var spherical = array[index];
 		if (!defined(spherical)) {
 			spherical = new Spherical();
@@ -1472,10 +1472,10 @@
 		var theta = Math.atan(tanX / tanY);
 		var cone = Math.atan(Math.sqrt((tanX * tanX) + (tanY * tanY)));
 
-		assignSpherical$1(0, directions, theta, cone);
-		assignSpherical$1(1, directions, CesiumMath.toRadians(180.0) - theta, cone);
-		assignSpherical$1(2, directions, CesiumMath.toRadians(180.0) + theta, cone);
-		assignSpherical$1(3, directions, -theta, cone);
+		assignSpherical(0, directions, theta, cone);
+		assignSpherical(1, directions, CesiumMath.toRadians(180.0) - theta, cone);
+		assignSpherical(2, directions, CesiumMath.toRadians(180.0) + theta, cone);
+		assignSpherical(3, directions, -theta, cone);
 
 		directions.length = 4;
 		rectangularSensor._customSensor.directions = directions;
@@ -1617,13 +1617,13 @@
 		return destroyObject(this);
 	};
 
-	const defaultIntersectionColor$2 = Color.WHITE;
-	const defaultIntersectionWidth$2 = 1.0;
-	const defaultRadius$2 = Number.POSITIVE_INFINITY;
+	const defaultIntersectionColor = Color.WHITE;
+	const defaultIntersectionWidth = 1.0;
+	const defaultRadius = Number.POSITIVE_INFINITY;
 
-	const matrix3Scratch$2 = new Matrix3();
-	const cachedPosition$2 = new Cartesian3();
-	const cachedOrientation$2 = new Quaternion();
+	const matrix3Scratch = new Matrix3();
+	const cachedPosition = new Cartesian3();
+	const cachedOrientation = new Quaternion();
 
 	/**
 	 * A {@link Visualizer} which maps {@link Entity#rectangularSensor} to a {@link RectangularSensor}.
@@ -1682,8 +1682,8 @@
 			var show = entity.isShowing && entity.isAvailable(time) && Property.getValueOrDefault(rectangularSensorGraphics._show, time, true);
 
 			if (show) {
-				position = Property.getValueOrUndefined(entity._position, time, cachedPosition$2);
-				orientation = Property.getValueOrUndefined(entity._orientation, time, cachedOrientation$2);
+				position = Property.getValueOrUndefined(entity._position, time, cachedPosition);
+				orientation = Property.getValueOrUndefined(entity._orientation, time, cachedOrientation);
 				show = defined(position) && defined(orientation);
 			}
 
@@ -1710,7 +1710,7 @@
 			}
 
 			if (!Cartesian3.equals(position, data.position) || !Quaternion.equals(orientation, data.orientation)) {
-				Matrix4.fromRotationTranslation(Matrix3.fromQuaternion(orientation, matrix3Scratch$2), position, primitive.modelMatrix);
+				Matrix4.fromRotationTranslation(Matrix3.fromQuaternion(orientation, matrix3Scratch), position, primitive.modelMatrix);
 				data.position = Cartesian3.clone(position, data.position);
 				data.orientation = Quaternion.clone(orientation, data.orientation);
 			}
@@ -1718,10 +1718,10 @@
 			primitive.show = true;
 			primitive.xHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._xHalfAngle, time, CesiumMath.PI_OVER_TWO);
 			primitive.yHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._yHalfAngle, time, CesiumMath.PI_OVER_TWO);
-			primitive.radius = Property.getValueOrDefault(rectangularSensorGraphics._radius, time, defaultRadius$2);
+			primitive.radius = Property.getValueOrDefault(rectangularSensorGraphics._radius, time, defaultRadius);
 			primitive.lateralSurfaceMaterial = MaterialProperty.getValue(time, rectangularSensorGraphics._lateralSurfaceMaterial, primitive.lateralSurfaceMaterial);
-			primitive.intersectionColor = Property.getValueOrClonedDefault(rectangularSensorGraphics._intersectionColor, time, defaultIntersectionColor$2, primitive.intersectionColor);
-			primitive.intersectionWidth = Property.getValueOrDefault(rectangularSensorGraphics._intersectionWidth, time, defaultIntersectionWidth$2);
+			primitive.intersectionColor = Property.getValueOrClonedDefault(rectangularSensorGraphics._intersectionColor, time, defaultIntersectionColor, primitive.intersectionColor);
+			primitive.intersectionWidth = Property.getValueOrDefault(rectangularSensorGraphics._intersectionWidth, time, defaultIntersectionWidth);
 		}
 		return true;
 	};
@@ -1962,4 +1962,4 @@
 
 	return cesiumSensorVolumes;
 
-})));
+}));
