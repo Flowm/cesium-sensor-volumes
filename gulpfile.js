@@ -11,7 +11,7 @@ var glsl = require('gulp-glsl');
 
 var rollup = require('rollup');
 var { string } = require('rollup-plugin-string');
-var { terser } = require('rollup-plugin-terser');
+var terser = require('@rollup/plugin-terser');
 
 var browserSync = require('browser-sync').create();
 
