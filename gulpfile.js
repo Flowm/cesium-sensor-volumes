@@ -7,11 +7,11 @@ var gulp = require('gulp');
 var through = require('through2');
 var del = require('del');
 var xo = require('gulp-xo');
-var glsl = require('gulp-glsl');
 
 var rollup = require('rollup');
 var { string } = require('rollup-plugin-string');
 var terser = require('@rollup/plugin-terser');
+var glslStripComments = require('glsl-strip-comments');
 
 var browserSync = require('browser-sync').create();
 
@@ -33,7 +33,13 @@ exports.clean = clean;
 
 function preprocessShaders() {
 	return gulp.src('lib/**/*.glsl')
-		.pipe(glsl({ format: 'raw', ext: '.glsl' }))
+		.pipe(through.obj(function(file, _, cb) {
+			if (file.isBuffer()) {
+				const output = glslStripComments(file.contents.toString(), { version: '300 es' });
+				file.contents = Buffer.from(output);
+			}
+			cb(null, file);
+		}))
 		.pipe(gulp.dest('.tmp'));
 }
 

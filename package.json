@@ -14,17 +14,16 @@
   "main": "dist/cesium-sensor-volumes.js",
   "module": "dist/cesium-sensor-volumes.es.js",
   "dependencies": {
-    "cesium": "^1.100"
+    "cesium": "^1.102"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.2.1",
-    "browser-sync": "^2.27.11",
+    "browser-sync": "^2.27.12",
     "del": "^6.1.1",
-    "electron": "22.0.0",
+    "electron": "23.1.1",
     "glsl-strip-comments": "^1.0.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
-    "gulp-glsl": "^1.2.4",
     "gulp-xo": "^0.15.0",
     "jasmine-core": "^4.5.0",
     "karma": "^6.4.1",

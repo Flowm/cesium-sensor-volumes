@@ -13,17 +13,17 @@ in vec3 v_normalEC;
 vec4 getColor(float sensorRadius, vec3 pointEC)
 {
     czm_materialInput materialInput;
-    
-    vec3 pointMC = (czm_inverseModelView * vec4(pointEC, 1.0)).xyz;                                
-    materialInput.st = sensor2dTextureCoordinates(sensorRadius, pointMC);   
+
+    vec3 pointMC = (czm_inverseModelView * vec4(pointEC, 1.0)).xyz;
+    materialInput.st = sensor2dTextureCoordinates(sensorRadius, pointMC);
     materialInput.str = pointMC / sensorRadius;
-    
+
     vec3 positionToEyeEC = -v_positionEC;
     materialInput.positionToEyeEC = positionToEyeEC;
-    
+
     vec3 normalEC = normalize(v_normalEC);
     materialInput.normalEC = u_normalDirection * normalEC;
-    
+
     czm_material material = czm_getMaterial(materialInput);
     return mix(czm_phong(normalize(positionToEyeEC), material, czm_lightDirectionEC), vec4(material.diffuse, material.alpha), 0.4);
 }
@@ -69,20 +69,20 @@ void main()
     float ellipsoidValue = ellipsoidSurfaceFunction(v_positionWC);
 
     // Occluded by the ellipsoid?
-	if (!u_showThroughEllipsoid)
-	{
-	    // Discard if in the ellipsoid    
-	    // PERFORMANCE_IDEA: A coarse check for ellipsoid intersection could be done on the CPU first.
-	    if (ellipsoidValue < 0.0)
-	    {
+    if (!u_showThroughEllipsoid)
+    {
+        // Discard if in the ellipsoid
+        // PERFORMANCE_IDEA: A coarse check for ellipsoid intersection could be done on the CPU first.
+        if (ellipsoidValue < 0.0)
+        {
             discard;
-	    }
+        }
 
-	    // Discard if in the sensor's shadow
-	    if (inSensorShadow(sensorVertexWC, v_positionWC))
-	    {
-	        discard;
-	    }
+        // Discard if in the sensor's shadow
+        if (inSensorShadow(sensorVertexWC, v_positionWC))
+        {
+            discard;
+        }
     }
 
     // Discard if not in the sensor's sphere
@@ -91,7 +91,7 @@ void main()
     {
         discard;
     }
-    
+
     // Notes: Each surface functions should have an associated tolerance based on the floating point error.
     bool isOnEllipsoid = isOnBoundary(ellipsoidValue, czm_epsilon3);
     out_FragColor = shade(isOnEllipsoid);
