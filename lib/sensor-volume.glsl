@@ -1,3 +1,5 @@
+#version 300 es
+
 uniform vec4 u_intersectionColor;
 uniform float u_intersectionWidth;
 

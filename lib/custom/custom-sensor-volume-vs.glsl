@@ -1,9 +1,11 @@
-attribute vec4 position;
-attribute vec3 normal;
+#version 300 es
 
-varying vec3 v_positionWC;
-varying vec3 v_positionEC;
-varying vec3 v_normalEC;
+in vec4 position;
+in vec3 normal;
+
+out vec3 v_positionWC;
+out vec3 v_positionEC;
+out vec3 v_normalEC;
 
 void main()
 {

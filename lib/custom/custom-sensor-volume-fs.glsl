@@ -1,6 +1,4 @@
-#ifdef GL_OES_standard_derivatives
-    #extension GL_OES_standard_derivatives : enable
-#endif  
+#version 300 es
 
 uniform bool u_showIntersection;
 uniform bool u_showThroughEllipsoid;
@@ -8,9 +6,9 @@ uniform bool u_showThroughEllipsoid;
 uniform float u_sensorRadius;
 uniform float u_normalDirection;
 
-varying vec3 v_positionWC;
-varying vec3 v_positionEC;
-varying vec3 v_normalEC;
+in vec3 v_positionWC;
+in vec3 v_positionEC;
+in vec3 v_normalEC;
 
 vec4 getColor(float sensorRadius, vec3 pointEC)
 {
@@ -35,7 +33,6 @@ bool isOnBoundary(float value, float epsilon)
     float width = getIntersectionWidth();
     float tolerance = width * epsilon;
 
-#ifdef GL_OES_standard_derivatives
     float delta = max(abs(dFdx(value)), abs(dFdy(value)));
     float pixels = width * delta;
     float temp = abs(value);
@@ -47,9 +44,6 @@ bool isOnBoundary(float value, float epsilon)
     // then the delta would be 1 and "temp - delta" would be "1 - 1" which is zero even though neither of
     // the points is close to zero.
     return temp < tolerance && temp < pixels || (delta < 10.0 * tolerance && temp - delta < tolerance && temp < pixels);
-#else
-    return abs(value) < tolerance;
-#endif
 }
 
 vec4 shade(bool isOnBoundary)
@@ -100,5 +94,5 @@ void main()
     
     // Notes: Each surface functions should have an associated tolerance based on the floating point error.
     bool isOnEllipsoid = isOnBoundary(ellipsoidValue, czm_epsilon3);
-    gl_FragColor = shade(isOnEllipsoid);
+    out_FragColor = shade(isOnEllipsoid);
 }
