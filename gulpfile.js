@@ -60,7 +60,7 @@ async function buildEs() {
 				include: '**/*.glsl'
 			})
 		],
-		external: id => /Cesium/.test(id)
+		external: id => id === 'cesium' || /Cesium/.test(id)
 	});
 
 	await bundle.write({
@@ -90,15 +90,25 @@ function generateShims() {
 	return gulp.src(['./dist/cesium-sensor-volumes.es.js'])
 		.pipe(through.obj(function(file, _, cb) {
 			if (file.isBuffer()) {
-				var cesiumRequireRegex = /import (\w*) from 'Cesium\/\w*\/(\w*)'/;
-				const output = file.contents.toString().split('\n').map(line => {
-					const match = cesiumRequireRegex.exec(line);
-					if (match) {
-						return `const ${match[1]} = Cesium['${match[2]}'];`;
-					}
-					return line;
+				// Handle destructured imports from 'cesium'
+				var cesiumDestructuredRegex = /import\s*\{\s*([^}]+)\s*\}\s*from\s*['"]cesium['"];?/g;
+				var content = file.contents.toString();
+
+				// Replace destructured imports with Cesium global references
+				const output = content.replace(cesiumDestructuredRegex, (match, imports) => {
+					// Parse the imports, handling aliases like "Math as CesiumMath"
+					const importList = imports.split(',').map(imp => {
+						const trimmed = imp.trim();
+						if (trimmed.includes(' as ')) {
+							const [cesiumName, localName] = trimmed.split(' as ').map(s => s.trim());
+							return `const ${localName} = Cesium.${cesiumName};`;
+						} else {
+							return `const ${trimmed} = Cesium.${trimmed};`;
+						}
+					});
+					return importList.join('\n');
 				});
-				file.contents = Buffer.from(output.join('\n'));
+				file.contents = Buffer.from(output);
 			}
 			cb(null, file);
 		}))

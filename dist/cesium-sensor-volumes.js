@@ -28,43 +28,43 @@
 	 * Derived from Cesium Sensors - https://github.com/AnalyticalGraphicsInc/cesium-sensors
 	 */
 
-	const Cartesian3 = Cesium['Cartesian3'];
-	const Color = Cesium['Color'];
-	const defined = Cesium['defined'];
-	const Spherical = Cesium['Spherical'];
-	const TimeInterval = Cesium['TimeInterval'];
-	const CzmlDataSource = Cesium['CzmlDataSource'];
-	const DataSourceDisplay = Cesium['DataSourceDisplay'];
-	const defaultValue = Cesium['defaultValue'];
-	const DeveloperError = Cesium['DeveloperError'];
-	const Event = Cesium['Event'];
-	const createMaterialPropertyDescriptor = Cesium['createMaterialPropertyDescriptor'];
-	const createPropertyDescriptor = Cesium['createPropertyDescriptor'];
-	const AssociativeArray = Cesium['AssociativeArray'];
-	const destroyObject = Cesium['destroyObject'];
-	const CesiumMath = Cesium['Math'];
-	const Matrix3 = Cesium['Matrix3'];
-	const Matrix4 = Cesium['Matrix4'];
-	const Quaternion = Cesium['Quaternion'];
-	const MaterialProperty = Cesium['MaterialProperty'];
-	const Property = Cesium['Property'];
-	const BoundingSphere = Cesium['BoundingSphere'];
-	const combine = Cesium['combine'];
-	const ComponentDatatype = Cesium['ComponentDatatype'];
-	const PrimitiveType = Cesium['PrimitiveType'];
-	const Buffer = Cesium['Buffer'];
-	const BufferUsage = Cesium['BufferUsage'];
-	const DrawCommand = Cesium['DrawCommand'];
-	const Pass = Cesium['Pass'];
-	const RenderState = Cesium['RenderState'];
-	const ShaderProgram = Cesium['ShaderProgram'];
-	const ShaderSource = Cesium['ShaderSource'];
-	const VertexArray = Cesium['VertexArray'];
-	const BlendingState = Cesium['BlendingState'];
-	const CullFace = Cesium['CullFace'];
-	const Material = Cesium['Material'];
-	const SceneMode = Cesium['SceneMode'];
-	const clone = Cesium['clone'];
+	const createPropertyDescriptor = Cesium.createPropertyDescriptor;
+	const createMaterialPropertyDescriptor = Cesium.createMaterialPropertyDescriptor;
+	const defined = Cesium.defined;
+	const DeveloperError = Cesium.DeveloperError;
+	const defaultValue = Cesium.defaultValue;
+	const Event = Cesium.Event;
+	const Cartesian3 = Cesium.Cartesian3;
+	const SceneMode = Cesium.SceneMode;
+	const RenderState = Cesium.RenderState;
+	const BlendingState = Cesium.BlendingState;
+	const CullFace = Cesium.CullFace;
+	const Pass = Cesium.Pass;
+	const Matrix4 = Cesium.Matrix4;
+	const BoundingSphere = Cesium.BoundingSphere;
+	const ShaderSource = Cesium.ShaderSource;
+	const ShaderProgram = Cesium.ShaderProgram;
+	const combine = Cesium.combine;
+	const destroyObject = Cesium.destroyObject;
+	const DrawCommand = Cesium.DrawCommand;
+	const PrimitiveType = Cesium.PrimitiveType;
+	const Material = Cesium.Material;
+	const Color = Cesium.Color;
+	const Buffer = Cesium.Buffer;
+	const BufferUsage = Cesium.BufferUsage;
+	const ComponentDatatype = Cesium.ComponentDatatype;
+	const VertexArray = Cesium.VertexArray;
+	const Matrix3 = Cesium.Matrix3;
+	const Quaternion = Cesium.Quaternion;
+	const AssociativeArray = Cesium.AssociativeArray;
+	const Property = Cesium.Property;
+	const Math$1 = Cesium.Math;
+	const MaterialProperty = Cesium.MaterialProperty;
+	const Spherical = Cesium.Spherical;
+	const clone = Cesium.clone;
+	const CzmlDataSource = Cesium.CzmlDataSource;
+	const DataSourceDisplay = Cesium.DataSourceDisplay;
+	const TimeInterval = Cesium.TimeInterval;
 
 	/**
 	 * An optionally time-dynamic cone.
@@ -807,11 +807,11 @@
 		var directions = primitive.directions;
 		var angle;
 		var i = 0;
-		var angleStep = CesiumMath.toRadians(2.0);
-		if (minimumClockAngle === 0.0 && maximumClockAngle === CesiumMath.TWO_PI) {
+		var angleStep = Math$1.toRadians(2.0);
+		if (minimumClockAngle === 0.0 && maximumClockAngle === Math$1.TWO_PI) {
 			// No clock angle limits, so this is just a circle.
 			// There might be a hole but we're ignoring it for now.
-			for (angle = 0.0; angle < CesiumMath.TWO_PI; angle += angleStep) {
+			for (angle = 0.0; angle < Math$1.TWO_PI; angle += angleStep) {
 				assignSpherical$1(i++, directions, angle, outerHalfAngle);
 			}
 		} else {
@@ -929,7 +929,7 @@
 
 			primitive.show = true;
 			var minimumClockAngle = Property.getValueOrDefault(conicSensorGraphics._minimumClockAngle, time, 0);
-			var maximumClockAngle = Property.getValueOrDefault(conicSensorGraphics._maximumClockAngle, time, CesiumMath.TWO_PI);
+			var maximumClockAngle = Property.getValueOrDefault(conicSensorGraphics._maximumClockAngle, time, Math$1.TWO_PI);
 			var innerHalfAngle = Property.getValueOrDefault(conicSensorGraphics._innerHalfAngle, time, 0);
 			var outerHalfAngle = Property.getValueOrDefault(conicSensorGraphics._outerHalfAngle, time, Math.PI);
 
@@ -1467,14 +1467,14 @@
 		var directions = rectangularSensor._customSensor.directions;
 
 		// At 90 degrees the sensor is completely open, and tan() goes to infinity.
-		var tanX = Math.tan(Math.min(rectangularSensor._xHalfAngle, CesiumMath.toRadians(89.0)));
-		var tanY = Math.tan(Math.min(rectangularSensor._yHalfAngle, CesiumMath.toRadians(89.0)));
+		var tanX = Math.tan(Math.min(rectangularSensor._xHalfAngle, Math$1.toRadians(89.0)));
+		var tanY = Math.tan(Math.min(rectangularSensor._yHalfAngle, Math$1.toRadians(89.0)));
 		var theta = Math.atan(tanX / tanY);
 		var cone = Math.atan(Math.sqrt((tanX * tanX) + (tanY * tanY)));
 
 		assignSpherical(0, directions, theta, cone);
-		assignSpherical(1, directions, CesiumMath.toRadians(180.0) - theta, cone);
-		assignSpherical(2, directions, CesiumMath.toRadians(180.0) + theta, cone);
+		assignSpherical(1, directions, Math$1.toRadians(180.0) - theta, cone);
+		assignSpherical(2, directions, Math$1.toRadians(180.0) + theta, cone);
 		assignSpherical(3, directions, -theta, cone);
 
 		directions.length = 4;
@@ -1489,8 +1489,8 @@
 		customSensorOptions.directions = undefined;
 		this._customSensor = new CustomSensorVolume(customSensorOptions);
 
-		this._xHalfAngle = defaultValue(options.xHalfAngle, CesiumMath.PI_OVER_TWO);
-		this._yHalfAngle = defaultValue(options.yHalfAngle, CesiumMath.PI_OVER_TWO);
+		this._xHalfAngle = defaultValue(options.xHalfAngle, Math$1.PI_OVER_TWO);
+		this._yHalfAngle = defaultValue(options.yHalfAngle, Math$1.PI_OVER_TWO);
 
 		updateDirections(this);
 	};
@@ -1502,7 +1502,7 @@
 			},
 			set: function(value) {
 				// >>includeStart('debug', pragmas.debug)
-				if (value > CesiumMath.PI_OVER_TWO) {
+				if (value > Math$1.PI_OVER_TWO) {
 					throw new DeveloperError('xHalfAngle must be less than or equal to 90 degrees.');
 				}
 				// >>includeEnd('debug');
@@ -1519,7 +1519,7 @@
 			},
 			set: function(value) {
 				// >>includeStart('debug', pragmas.debug)
-				if (value > CesiumMath.PI_OVER_TWO) {
+				if (value > Math$1.PI_OVER_TWO) {
 					throw new DeveloperError('yHalfAngle must be less than or equal to 90 degrees.');
 				}
 				// >>includeEnd('debug');
@@ -1716,8 +1716,8 @@
 			}
 
 			primitive.show = true;
-			primitive.xHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._xHalfAngle, time, CesiumMath.PI_OVER_TWO);
-			primitive.yHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._yHalfAngle, time, CesiumMath.PI_OVER_TWO);
+			primitive.xHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._xHalfAngle, time, Math$1.PI_OVER_TWO);
+			primitive.yHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._yHalfAngle, time, Math$1.PI_OVER_TWO);
 			primitive.radius = Property.getValueOrDefault(rectangularSensorGraphics._radius, time, defaultRadius);
 			primitive.lateralSurfaceMaterial = MaterialProperty.getValue(time, rectangularSensorGraphics._lateralSurfaceMaterial, primitive.lateralSurfaceMaterial);
 			primitive.intersectionColor = Property.getValueOrClonedDefault(rectangularSensorGraphics._intersectionColor, time, defaultIntersectionColor, primitive.intersectionColor);

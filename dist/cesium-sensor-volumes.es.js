@@ -22,43 +22,7 @@
  * Derived from Cesium Sensors - https://github.com/AnalyticalGraphicsInc/cesium-sensors
  */
 
-import Cartesian3 from 'Cesium/Core/Cartesian3';
-import Color from 'Cesium/Core/Color';
-import defined from 'Cesium/Core/defined';
-import Spherical from 'Cesium/Core/Spherical';
-import TimeInterval from 'Cesium/Core/TimeInterval';
-import CzmlDataSource from 'Cesium/DataSources/CzmlDataSource';
-import DataSourceDisplay from 'Cesium/DataSources/DataSourceDisplay';
-import defaultValue from 'Cesium/Core/defaultValue';
-import DeveloperError from 'Cesium/Core/DeveloperError';
-import Event from 'Cesium/Core/Event';
-import createMaterialPropertyDescriptor from 'Cesium/DataSources/createMaterialPropertyDescriptor';
-import createPropertyDescriptor from 'Cesium/DataSources/createPropertyDescriptor';
-import AssociativeArray from 'Cesium/Core/AssociativeArray';
-import destroyObject from 'Cesium/Core/destroyObject';
-import CesiumMath from 'Cesium/Core/Math';
-import Matrix3 from 'Cesium/Core/Matrix3';
-import Matrix4 from 'Cesium/Core/Matrix4';
-import Quaternion from 'Cesium/Core/Quaternion';
-import MaterialProperty from 'Cesium/DataSources/MaterialProperty';
-import Property from 'Cesium/DataSources/Property';
-import BoundingSphere from 'Cesium/Core/BoundingSphere';
-import combine from 'Cesium/Core/combine';
-import ComponentDatatype from 'Cesium/Core/ComponentDatatype';
-import PrimitiveType from 'Cesium/Core/PrimitiveType';
-import Buffer from 'Cesium/Renderer/Buffer';
-import BufferUsage from 'Cesium/Renderer/BufferUsage';
-import DrawCommand from 'Cesium/Renderer/DrawCommand';
-import Pass from 'Cesium/Renderer/Pass';
-import RenderState from 'Cesium/Renderer/RenderState';
-import ShaderProgram from 'Cesium/Renderer/ShaderProgram';
-import ShaderSource from 'Cesium/Renderer/ShaderSource';
-import VertexArray from 'Cesium/Renderer/VertexArray';
-import BlendingState from 'Cesium/Scene/BlendingState';
-import CullFace from 'Cesium/Scene/CullFace';
-import Material from 'Cesium/Scene/Material';
-import SceneMode from 'Cesium/Scene/SceneMode';
-import clone from 'Cesium/Core/clone';
+import { createPropertyDescriptor, createMaterialPropertyDescriptor, defined, DeveloperError, defaultValue, Event, Cartesian3, SceneMode, RenderState, BlendingState, CullFace, Pass, Matrix4, BoundingSphere, ShaderSource, ShaderProgram, combine, destroyObject, DrawCommand, PrimitiveType, Material, Color, Buffer, BufferUsage, ComponentDatatype, VertexArray, Matrix3, Quaternion, AssociativeArray, Property, Math as Math$1, MaterialProperty, Spherical, clone, CzmlDataSource, DataSourceDisplay, TimeInterval } from 'cesium';
 
 /**
  * An optionally time-dynamic cone.
@@ -801,11 +765,11 @@ function computeDirections(primitive, minimumClockAngle, maximumClockAngle, inne
 	var directions = primitive.directions;
 	var angle;
 	var i = 0;
-	var angleStep = CesiumMath.toRadians(2.0);
-	if (minimumClockAngle === 0.0 && maximumClockAngle === CesiumMath.TWO_PI) {
+	var angleStep = Math$1.toRadians(2.0);
+	if (minimumClockAngle === 0.0 && maximumClockAngle === Math$1.TWO_PI) {
 		// No clock angle limits, so this is just a circle.
 		// There might be a hole but we're ignoring it for now.
-		for (angle = 0.0; angle < CesiumMath.TWO_PI; angle += angleStep) {
+		for (angle = 0.0; angle < Math$1.TWO_PI; angle += angleStep) {
 			assignSpherical$1(i++, directions, angle, outerHalfAngle);
 		}
 	} else {
@@ -923,7 +887,7 @@ ConicSensorVisualizer.prototype.update = function(time) {
 
 		primitive.show = true;
 		var minimumClockAngle = Property.getValueOrDefault(conicSensorGraphics._minimumClockAngle, time, 0);
-		var maximumClockAngle = Property.getValueOrDefault(conicSensorGraphics._maximumClockAngle, time, CesiumMath.TWO_PI);
+		var maximumClockAngle = Property.getValueOrDefault(conicSensorGraphics._maximumClockAngle, time, Math$1.TWO_PI);
 		var innerHalfAngle = Property.getValueOrDefault(conicSensorGraphics._innerHalfAngle, time, 0);
 		var outerHalfAngle = Property.getValueOrDefault(conicSensorGraphics._outerHalfAngle, time, Math.PI);
 
@@ -1461,14 +1425,14 @@ function updateDirections(rectangularSensor) {
 	var directions = rectangularSensor._customSensor.directions;
 
 	// At 90 degrees the sensor is completely open, and tan() goes to infinity.
-	var tanX = Math.tan(Math.min(rectangularSensor._xHalfAngle, CesiumMath.toRadians(89.0)));
-	var tanY = Math.tan(Math.min(rectangularSensor._yHalfAngle, CesiumMath.toRadians(89.0)));
+	var tanX = Math.tan(Math.min(rectangularSensor._xHalfAngle, Math$1.toRadians(89.0)));
+	var tanY = Math.tan(Math.min(rectangularSensor._yHalfAngle, Math$1.toRadians(89.0)));
 	var theta = Math.atan(tanX / tanY);
 	var cone = Math.atan(Math.sqrt((tanX * tanX) + (tanY * tanY)));
 
 	assignSpherical(0, directions, theta, cone);
-	assignSpherical(1, directions, CesiumMath.toRadians(180.0) - theta, cone);
-	assignSpherical(2, directions, CesiumMath.toRadians(180.0) + theta, cone);
+	assignSpherical(1, directions, Math$1.toRadians(180.0) - theta, cone);
+	assignSpherical(2, directions, Math$1.toRadians(180.0) + theta, cone);
 	assignSpherical(3, directions, -theta, cone);
 
 	directions.length = 4;
@@ -1483,8 +1447,8 @@ const RectangularPyramidSensorVolume = function(options) {
 	customSensorOptions.directions = undefined;
 	this._customSensor = new CustomSensorVolume(customSensorOptions);
 
-	this._xHalfAngle = defaultValue(options.xHalfAngle, CesiumMath.PI_OVER_TWO);
-	this._yHalfAngle = defaultValue(options.yHalfAngle, CesiumMath.PI_OVER_TWO);
+	this._xHalfAngle = defaultValue(options.xHalfAngle, Math$1.PI_OVER_TWO);
+	this._yHalfAngle = defaultValue(options.yHalfAngle, Math$1.PI_OVER_TWO);
 
 	updateDirections(this);
 };
@@ -1496,7 +1460,7 @@ Object.defineProperties(RectangularPyramidSensorVolume.prototype, {
 		},
 		set: function(value) {
 			// >>includeStart('debug', pragmas.debug)
-			if (value > CesiumMath.PI_OVER_TWO) {
+			if (value > Math$1.PI_OVER_TWO) {
 				throw new DeveloperError('xHalfAngle must be less than or equal to 90 degrees.');
 			}
 			// >>includeEnd('debug');
@@ -1513,7 +1477,7 @@ Object.defineProperties(RectangularPyramidSensorVolume.prototype, {
 		},
 		set: function(value) {
 			// >>includeStart('debug', pragmas.debug)
-			if (value > CesiumMath.PI_OVER_TWO) {
+			if (value > Math$1.PI_OVER_TWO) {
 				throw new DeveloperError('yHalfAngle must be less than or equal to 90 degrees.');
 			}
 			// >>includeEnd('debug');
@@ -1710,8 +1674,8 @@ RectangularSensorVisualizer.prototype.update = function(time) {
 		}
 
 		primitive.show = true;
-		primitive.xHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._xHalfAngle, time, CesiumMath.PI_OVER_TWO);
-		primitive.yHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._yHalfAngle, time, CesiumMath.PI_OVER_TWO);
+		primitive.xHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._xHalfAngle, time, Math$1.PI_OVER_TWO);
+		primitive.yHalfAngle = Property.getValueOrDefault(rectangularSensorGraphics._yHalfAngle, time, Math$1.PI_OVER_TWO);
 		primitive.radius = Property.getValueOrDefault(rectangularSensorGraphics._radius, time, defaultRadius);
 		primitive.lateralSurfaceMaterial = MaterialProperty.getValue(time, rectangularSensorGraphics._lateralSurfaceMaterial, primitive.lateralSurfaceMaterial);
 		primitive.intersectionColor = Property.getValueOrClonedDefault(rectangularSensorGraphics._intersectionColor, time, defaultIntersectionColor, primitive.intersectionColor);
