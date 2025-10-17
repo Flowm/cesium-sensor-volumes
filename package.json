@@ -13,6 +13,15 @@
   ],
   "main": "dist/cesium-sensor-volumes.js",
   "module": "dist/cesium-sensor-volumes.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/cesium-sensor-volumes.es.js",
+      "require": "./dist/cesium-sensor-volumes.js"
+    },
+    "./engine": {
+      "import": "./dist/cesium-sensor-volumes.engine.es.js"
+    }
+  },
   "dependencies": {
     "cesium": "^1.134"
   },

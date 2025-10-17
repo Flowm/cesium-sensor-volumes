@@ -83,6 +83,25 @@ async function buildEs() {
 		banner: getCopyrightHeaders()
 	});
 }
+
+function createEngineBuilds() {
+	return gulp.src(['dist/cesium-sensor-volumes.es.js', 'dist/cesium-sensor-volumes.es.min.js'])
+		.pipe(through.obj(function(file, _, cb) {
+			if (file.isBuffer()) {
+				var content = file.contents.toString();
+				// Replace 'cesium' imports with '@cesium/engine'
+				content = content.replace(/from ['"]cesium['"]/g, "from '@cesium/engine'");
+				content = content.replace(/from"cesium"/g, 'from"@cesium/engine"');
+				file.contents = Buffer.from(content);
+			}
+			// Rename the file to add .engine
+			var basename = file.basename.replace('.es.js', '.engine.es.js').replace('.es.min.js', '.engine.es.min.js');
+			file.basename = basename;
+			cb(null, file);
+		}))
+		.pipe(gulp.dest('dist'));
+}
+
 exports.buildEs = gulp.series(clean, gulp.parallel(preprocessShaders, preprocessJs), buildEs);
 
 function generateShims() {
@@ -139,7 +158,7 @@ async function buildUmd() {
 		format: 'umd'
 	});
 }
-exports.build = gulp.series(exports.buildEs, generateShims, buildUmd);
+exports.build = gulp.series(exports.buildEs, createEngineBuilds, generateShims, buildUmd);
 
 exports.buildReload = gulp.series(exports.build, reload);
 
