@@ -22,7 +22,7 @@
  * Derived from Cesium Sensors - https://github.com/AnalyticalGraphicsInc/cesium-sensors
  */
 
-import { createPropertyDescriptor, createMaterialPropertyDescriptor, defined, DeveloperError, defaultValue, Event, Cartesian3, SceneMode, RenderState, BlendingState, CullFace, Pass, Matrix4, BoundingSphere, ShaderSource, ShaderProgram, combine, destroyObject, DrawCommand, PrimitiveType, Material, Color, Buffer, BufferUsage, ComponentDatatype, VertexArray, Matrix3, Quaternion, AssociativeArray, Property, Math as Math$1, MaterialProperty, Spherical, clone, CzmlDataSource, DataSourceDisplay, TimeInterval } from 'cesium';
+import { createPropertyDescriptor, createMaterialPropertyDescriptor, defined, DeveloperError, Event, Frozen, Cartesian3, SceneMode, RenderState, BlendingState, CullFace, Pass, Matrix4, BoundingSphere, ShaderSource, ShaderProgram, combine, destroyObject, DrawCommand, PrimitiveType, Material, Color, Buffer, BufferUsage, ComponentDatatype, VertexArray, Matrix3, Quaternion, AssociativeArray, Property, Math as Math$1, MaterialProperty, Spherical, clone, CzmlDataSource, DataSourceDisplay, TimeInterval } from 'cesium';
 
 /**
  * An optionally time-dynamic cone.
@@ -53,7 +53,7 @@ const ConicSensorGraphics = function(options) {
 	this._showSubscription = undefined;
 	this._definitionChanged = new Event();
 
-	this.merge(defaultValue(options, defaultValue.EMPTY_OBJECT));
+	this.merge(options ?? Frozen.EMPTY_OBJECT);
 };
 
 Object.defineProperties(ConicSensorGraphics.prototype, {
@@ -177,16 +177,16 @@ ConicSensorGraphics.prototype.merge = function(source) {
 	}
 	// >>includeEnd('debug');
 
-	this.show = defaultValue(this.show, source.show);
-	this.innerHalfAngle = defaultValue(this.innerHalfAngle, source.innerHalfAngle);
-	this.outerHalfAngle = defaultValue(this.outerHalfAngle, source.outerHalfAngle);
-	this.minimumClockAngle = defaultValue(this.minimumClockAngle, source.minimumClockAngle);
-	this.maximumClockAngle = defaultValue(this.maximumClockAngle, source.maximumClockAngle);
-	this.radius = defaultValue(this.radius, source.radius);
-	this.showIntersection = defaultValue(this.showIntersection, source.showIntersection);
-	this.intersectionColor = defaultValue(this.intersectionColor, source.intersectionColor);
-	this.intersectionWidth = defaultValue(this.intersectionWidth, source.intersectionWidth);
-	this.lateralSurfaceMaterial = defaultValue(this.lateralSurfaceMaterial, source.lateralSurfaceMaterial);
+	this.show = this.show ?? source.show;
+	this.innerHalfAngle = this.innerHalfAngle ?? source.innerHalfAngle;
+	this.outerHalfAngle = this.outerHalfAngle ?? source.outerHalfAngle;
+	this.minimumClockAngle = this.minimumClockAngle ?? source.minimumClockAngle;
+	this.maximumClockAngle = this.maximumClockAngle ?? source.maximumClockAngle;
+	this.radius = this.radius ?? source.radius;
+	this.showIntersection = this.showIntersection ?? source.showIntersection;
+	this.intersectionColor = this.intersectionColor ?? source.intersectionColor;
+	this.intersectionWidth = this.intersectionWidth ?? source.intersectionWidth;
+	this.lateralSurfaceMaterial = this.lateralSurfaceMaterial ?? source.lateralSurfaceMaterial;
 };
 
 var SensorVolume = "#version 300 es\n\nuniform vec4 u_intersectionColor;\nuniform float u_intersectionWidth;\n\nbool inSensorShadow(vec3 coneVertexWC, vec3 pointWC)\n{\n    \n    vec3 D = czm_ellipsoidInverseRadii;\n\n    \n    vec3 q = D * coneVertexWC;\n    float qMagnitudeSquared = dot(q, q);\n    float test = qMagnitudeSquared - 1.0;\n\n    \n    vec3 temp = D * pointWC - q;\n    float d = dot(temp, q);\n\n    \n    return (d < -test) && (d / length(temp) < -sqrt(test));\n}\n\nvec4 getIntersectionColor()\n{\n    return u_intersectionColor;\n}\n\nfloat getIntersectionWidth()\n{\n    return u_intersectionWidth;\n}\n\nvec2 sensor2dTextureCoordinates(float sensorRadius, vec3 pointMC)\n{\n    \n    float t = pointMC.z / sensorRadius;\n    float s = 1.0 + (atan(pointMC.y, pointMC.x) / czm_twoPi);\n    s = s - floor(s);\n\n    return vec2(s, t);\n}\n";
@@ -209,10 +209,10 @@ const FAR = 5906376272000.0;  // distance from the Sun to Pluto in meters.
  * @constructor
  */
 const CustomSensorVolume = function(options) {
-	options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+	options = options ?? Frozen.EMPTY_OBJECT;
 
 	this._pickId = undefined;
-	this._pickPrimitive = defaultValue(options._pickPrimitive, this);
+	this._pickPrimitive = options._pickPrimitive ?? this;
 
 	this._frontFaceColorCommand = new DrawCommand();
 	this._backFaceColorCommand = new DrawCommand();
@@ -239,7 +239,7 @@ const CustomSensorVolume = function(options) {
 	 * @type {Boolean}
 	 * @default true
 	 */
-	this.show = defaultValue(options.show, true);
+	this.show = options.show ?? true;
 
 	/**
 	 * When <code>true</code>, a polyline is shown where the sensor outline intersections the globe.
@@ -250,7 +250,7 @@ const CustomSensorVolume = function(options) {
 	 *
 	 * @see CustomSensorVolume#intersectionColor
 	 */
-	this.showIntersection = defaultValue(options.showIntersection, true);
+	this.showIntersection = options.showIntersection ?? true;
 
 	/**
 	 * <p>
@@ -261,7 +261,7 @@ const CustomSensorVolume = function(options) {
 	 * @type {Boolean}
 	 * @default false
 	 */
-	this.showThroughEllipsoid = defaultValue(options.showThroughEllipsoid, false);
+	this.showThroughEllipsoid = options.showThroughEllipsoid ?? false;
 	this._showThroughEllipsoid = this.showThroughEllipsoid;
 
 	/**
@@ -284,7 +284,7 @@ const CustomSensorVolume = function(options) {
 	 * var center = Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883);
 	 * sensor.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
 	 */
-	this.modelMatrix = Matrix4.clone(defaultValue(options.modelMatrix, Matrix4.IDENTITY));
+	this.modelMatrix = Matrix4.clone(options.modelMatrix ?? Matrix4.IDENTITY);
 	this._modelMatrix = new Matrix4();
 
 	/**
@@ -293,7 +293,7 @@ const CustomSensorVolume = function(options) {
 	 * @type {Number}
 	 * @default {@link Number.POSITIVE_INFINITY}
 	 */
-	this.radius = defaultValue(options.radius, Number.POSITIVE_INFINITY);
+	this.radius = options.radius ?? Number.POSITIVE_INFINITY;
 
 	this._directions = undefined;
 	this._directionsDirty = false;
@@ -330,7 +330,7 @@ const CustomSensorVolume = function(options) {
 	 *
 	 * @see CustomSensorVolume#showIntersection
 	 */
-	this.intersectionColor = Color.clone(defaultValue(options.intersectionColor, Color.WHITE));
+	this.intersectionColor = Color.clone(options.intersectionColor ?? Color.WHITE);
 
 	/**
 	 * The approximate pixel width of the polyline where the sensor outline intersects the globe.  The default is 5.0.
@@ -340,7 +340,7 @@ const CustomSensorVolume = function(options) {
 	 *
 	 * @see CustomSensorVolume#showIntersection
 	 */
-	this.intersectionWidth = defaultValue(options.intersectionWidth, 5.0);
+	this.intersectionWidth = options.intersectionWidth ?? 5.0;
 
 	/**
 	 * User-defined object returned when the sensors is picked.
@@ -992,7 +992,7 @@ const CustomPatternSensorGraphics = function(options) {
 	this._showSubscription = undefined;
 	this._definitionChanged = new Event();
 
-	this.merge(defaultValue(options, defaultValue.EMPTY_OBJECT));
+	this.merge(options ?? Frozen.EMPTY_OBJECT);
 };
 
 Object.defineProperties(CustomPatternSensorGraphics.prototype, {
@@ -1092,13 +1092,13 @@ CustomPatternSensorGraphics.prototype.merge = function(source) {
 	}
 	// >>includeEnd('debug');
 
-	this.directions = defaultValue(this.directions, source.directions);
-	this.radius = defaultValue(this.radius, source.radius);
-	this.show = defaultValue(this.show, source.show);
-	this.showIntersection = defaultValue(this.showIntersection, source.showIntersection);
-	this.intersectionColor = defaultValue(this.intersectionColor, source.intersectionColor);
-	this.intersectionWidth = defaultValue(this.intersectionWidth, source.intersectionWidth);
-	this.lateralSurfaceMaterial = defaultValue(this.lateralSurfaceMaterial, source.lateralSurfaceMaterial);
+	this.directions = this.directions ?? source.directions;
+	this.radius = this.radius ?? source.radius;
+	this.show = this.show ?? source.show;
+	this.showIntersection = this.showIntersection ?? source.showIntersection;
+	this.intersectionColor = this.intersectionColor ?? source.intersectionColor;
+	this.intersectionWidth = this.intersectionWidth ?? source.intersectionWidth;
+	this.lateralSurfaceMaterial = this.lateralSurfaceMaterial ?? source.lateralSurfaceMaterial;
 };
 
 const defaultIntersectionColor$1 = Color.WHITE;
@@ -1400,14 +1400,14 @@ RectangularSensorGraphics.prototype.merge = function(source) {
 	}
 	// >>includeEnd('debug');
 
-	this.xHalfAngle = defaultValue(this.xHalfAngle, source.xHalfAngle);
-	this.yHalfAngle = defaultValue(this.yHalfAngle, source.yHalfAngle);
-	this.radius = defaultValue(this.radius, source.radius);
-	this.show = defaultValue(this.show, source.show);
-	this.showIntersection = defaultValue(this.showIntersection, source.showIntersection);
-	this.intersectionColor = defaultValue(this.intersectionColor, source.intersectionColor);
-	this.intersectionWidth = defaultValue(this.intersectionWidth, source.intersectionWidth);
-	this.lateralSurfaceMaterial = defaultValue(this.lateralSurfaceMaterial, source.lateralSurfaceMaterial);
+	this.xHalfAngle = this.xHalfAngle ?? source.xHalfAngle;
+	this.yHalfAngle = this.yHalfAngle ?? source.yHalfAngle;
+	this.radius = this.radius ?? source.radius;
+	this.show = this.show ?? source.show;
+	this.showIntersection = this.showIntersection ?? source.showIntersection;
+	this.intersectionColor = this.intersectionColor ?? source.intersectionColor;
+	this.intersectionWidth = this.intersectionWidth ?? source.intersectionWidth;
+	this.lateralSurfaceMaterial = this.lateralSurfaceMaterial ?? source.lateralSurfaceMaterial;
 };
 
 function assignSpherical(index, array, clock, cone) {
@@ -1440,15 +1440,15 @@ function updateDirections(rectangularSensor) {
 }
 
 const RectangularPyramidSensorVolume = function(options) {
-	options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+	options = options ?? Frozen.EMPTY_OBJECT;
 
 	var customSensorOptions = clone(options);
-	customSensorOptions._pickPrimitive = defaultValue(options._pickPrimitive, this);
+	customSensorOptions._pickPrimitive = options._pickPrimitive ?? this;
 	customSensorOptions.directions = undefined;
 	this._customSensor = new CustomSensorVolume(customSensorOptions);
 
-	this._xHalfAngle = defaultValue(options.xHalfAngle, Math$1.PI_OVER_TWO);
-	this._yHalfAngle = defaultValue(options.yHalfAngle, Math$1.PI_OVER_TWO);
+	this._xHalfAngle = options.xHalfAngle ?? Math$1.PI_OVER_TWO;
+	this._yHalfAngle = options.yHalfAngle ?? Math$1.PI_OVER_TWO;
 
 	updateDirections(this);
 };

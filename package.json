@@ -14,7 +14,7 @@
   "main": "dist/cesium-sensor-volumes.js",
   "module": "dist/cesium-sensor-volumes.es.js",
   "dependencies": {
-    "cesium": "^1.133"
+    "cesium": "^1.134"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.2.1",
